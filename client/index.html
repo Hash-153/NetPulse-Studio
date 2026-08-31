@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPulse | Enterprise Network Observability & Simulation Suite</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/topology.css">
+  <link rel="stylesheet" href="css/inspector.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <div class="brand-logo">NP</div>
+      <div class="brand-title">
+        <h1>NetPulse Studio <span class="badge">v2.4 Pro</span></h1>
+      </div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="nav-btn active" data-tab="tab-topology">Topology Graph</button>
+      <button class="nav-btn" data-tab="tab-inspector">Packet Sniffer</button>
+      <button class="nav-btn" data-tab="tab-diagnostics">Diagnostics Console</button>
+      <button class="nav-btn" data-tab="tab-firewall">Firewall / ACLs</button>
+      <button class="nav-btn" data-tab="tab-telemetry">Telemetry & IDS</button>
+    </nav>
+
+    <div class="header-actions">
+      <div class="live-indicator">
+        <div class="pulse-dot"></div>
+        <span>ENGINE RUNNING</span>
+      </div>
+      <button class="btn btn-primary" id="btn-quick-inject">+ Inject Flow</button>
+    </div>
+  </header>
+
+  <!-- Metrics Summary Bar -->
+  <section class="stats-banner">
+    <div class="stat-card">
+      <div class="stat-info">
+        <div class="stat-label">Active Nodes</div>
+        <div class="stat-val" id="stat-nodes">9</div>
+      </div>
+      <div class="stat-icon icon-cyan">NODE</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-info">
+        <div class="stat-label">Network Throughput</div>
+        <div class="stat-val" id="stat-throughput">0.0 Kbps</div>
+      </div>
+      <div class="stat-icon icon-blue">MB/S</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-info">
+        <div class="stat-label">Packets / Sec</div>
+        <div class="stat-val" id="stat-pps">0 PPS</div>
+      </div>
+      <div class="stat-icon icon-green">FLOW</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-info">
+        <div class="stat-label">Firewall Rules</div>
+        <div class="stat-val" id="stat-rules">7</div>
+      </div>
+      <div class="stat-icon icon-purple">ACL</div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- TAB 1: Network Topology & Simulation -->
+    <section class="tab-pane active" id="tab-topology">
+      <div class="topology-container">
+        <div class="canvas-wrapper">
+          <div class="canvas-toolbar">
+            <button class="btn" id="btn-route-path">Compute Shortest Path</button>
+            <button class="btn" id="btn-refresh-topo">Reset Layout</button>
+          </div>
+          <svg id="topology-svg"></svg>
+        </div>
+
+        <div class="topology-sidebar">
+          <div class="panel-title">Node Inspector</div>
+          <div class="node-details-card" id="node-inspector-details">
+            <p style="color: var(--text-dim); font-size: 0.85rem;">Click on any node in the topology canvas to inspect properties, ARP entries, and routing metrics.</p>
+          </div>
+
+          <div class="panel-title" style="margin-top: 0.5rem;">Path Discovery</div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <select class="select-control" id="route-src-select"></select>
+            <select class="select-control" id="route-dst-select"></select>
+            <button class="btn btn-primary" id="btn-execute-route">Trace Shortest Route</button>
+          </div>
+          <div id="route-result-box" style="font-size: 0.8rem; margin-top: 0.5rem;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Packet Sniffer & Hex Inspector -->
+    <section class="tab-pane" id="tab-inspector">
+      <div class="inspector-layout">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Real-Time Packet Stream</div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn" id="btn-inject-icmp">Inject ICMP</button>
+              <button class="btn" id="btn-inject-dns">Inject DNS</button>
+              <button class="btn" id="btn-inject-http">Inject HTTP</button>
+              <button class="btn" id="btn-inject-arp">Inject ARP</button>
+            </div>
+          </div>
+          <div class="packet-table-wrapper">
+            <table class="packet-table">
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Time</th>
+                  <th>Length</th>
+                  <th>Summary</th>
+                  <th>Firewall Action</th>
+                </tr>
+              </thead>
+              <tbody id="packet-tbody">
+                <!-- Rows rendered via packet_inspector.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="dissection-split">
+          <div class="tree-container">
+            <div class="panel-header">
+              <div class="panel-title">Dissected Protocol Headers</div>
+            </div>
+            <div id="protocol-tree-content">
+              <p style="color: var(--text-dim); font-size: 0.85rem;">Select a packet from the table above to view deep header dissection.</p>
+            </div>
+          </div>
+
+          <div class="hex-container">
+            <div class="panel-header">
+              <div class="panel-title">Hexadecimal Payload Viewer</div>
+            </div>
+            <div class="hex-dump-view" id="hex-dump-content">
+              <span style="color: var(--text-dim);">No packet selected.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Network Diagnostics Console -->
+    <section class="tab-pane" id="tab-diagnostics">
+      <div class="grid-2col">
+        <!-- Ping & Traceroute Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">ICMP Ping & Hop Traceroute</div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+            <select class="select-control" id="diag-src-select" style="flex: 1;"></select>
+            <select class="select-control" id="diag-dst-select" style="flex: 1;"></select>
+          </div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+            <button class="btn btn-primary" id="btn-run-ping">Execute Ping (4 probes)</button>
+            <button class="btn" id="btn-run-traceroute">Run Traceroute</button>
+          </div>
+          <div class="hex-dump-view" id="diag-output-console" style="min-height: 240px;">
+            Ready to execute diagnostics...
+          </div>
+        </div>
+
+        <!-- Port Scanner Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">TCP Port & Service Discovery</div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+            <input type="text" class="input-control" id="scan-target-ip" value="10.20.1.10" style="flex: 1;" placeholder="Target IP Address">
+            <select class="select-control" id="scan-node-type">
+              <option value="server">Server Profile</option>
+              <option value="router">Router Profile</option>
+              <option value="host">Workstation Profile</option>
+            </select>
+            <button class="btn btn-primary" id="btn-run-portscan">Scan Ports</button>
+          </div>
+          <div class="hex-dump-view" id="scan-output-console" style="min-height: 240px;">
+            Ready to scan target host...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Firewall & Access Control Lists -->
+    <section class="tab-pane" id="tab-firewall">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Stateful ACL Security Filtering Rules</div>
+          <button class="btn btn-primary" id="btn-open-add-rule">+ Add ACL Rule</button>
+        </div>
+        <div class="packet-table-wrapper" style="max-height: 400px;">
+          <table class="packet-table">
+            <thead>
+              <tr>
+                <th>Rule ID</th>
+                <th>Action</th>
+                <th>Protocol</th>
+                <th>Source IP</th>
+                <th>Dest IP</th>
+                <th>Dest Port</th>
+                <th>Description</th>
+                <th>Matches</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="firewall-tbody">
+              <!-- Rendered via firewall_editor.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: Live Telemetry & IDS Security Alerts -->
+    <section class="tab-pane" id="tab-telemetry">
+      <div class="grid-2col">
+        <!-- Live Canvas Chart -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Real-Time Throughput (Kbps)</div>
+          </div>
+          <canvas id="throughput-chart" width="500" height="260" style="width: 100%; border-radius: 8px; background: #080c14;"></canvas>
+        </div>
+
+        <!-- IDS Intrusion Alerts Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Intrusion Detection System (IDS) Alerts</div>
+          </div>
+          <div id="ids-alerts-container" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 260px; overflow-y: auto;">
+            <p style="color: var(--text-dim); font-size: 0.85rem;">No security threats detected in the current window.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/topology_view.js"></script>
+  <script src="js/packet_inspector.js"></script>
+  <script src="js/diagnostics_ui.js"></script>
+  <script src="js/firewall_editor.js"></script>
+  <script src="js/live_monitor.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# NetPulse Core Production Dependencies
+# Note: Platform uses zero third-party licensed codebases (standard library runtime)
+# Optional development and testing tooling:
+pytest>=7.4.0
+coverage>=7.3.0
+flake8>=6.1.0
+mypy>=1.5.0
+black>=23.7.0

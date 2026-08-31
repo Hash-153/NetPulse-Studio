@@ -1,0 +1,156 @@
+/* Wireshark-Style Packet Inspector & Hex Dump Styles */
+.inspector-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Packet Table */
+.packet-table-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.packet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.825rem;
+  text-align: left;
+}
+
+.packet-table th {
+  background: rgba(10, 14, 23, 0.95);
+  color: var(--text-dim);
+  padding: 0.65rem 0.85rem;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.packet-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.packet-row {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.packet-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.packet-row.selected {
+  background: rgba(0, 212, 255, 0.15);
+  border-left: 3px solid var(--accent-cyan);
+}
+
+/* Inspector Bottom Split (Tree View + Hex Dump) */
+.dissection-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .dissection-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tree-container, .hex-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  min-height: 360px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+/* Collapsible Protocol Layer Tree */
+.layer-node {
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(10, 14, 23, 0.4);
+}
+
+.layer-header {
+  padding: 0.6rem 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.layer-header:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.layer-body {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+}
+
+.field-line {
+  padding: 0.25rem 0;
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+}
+
+.field-name {
+  color: var(--text-dim);
+}
+
+.field-value {
+  color: var(--accent-cyan);
+}
+
+/* Hex Dump Monospace Grid */
+.hex-dump-view {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  background: #080c14;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow-x: auto;
+}
+
+.hex-line {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.hex-offset {
+  color: var(--text-dim);
+}
+
+.hex-bytes {
+  color: #60a5fa;
+  letter-spacing: 0.05em;
+  flex: 1;
+}
+
+.hex-ascii {
+  color: #34d399;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 0.75rem;
+}

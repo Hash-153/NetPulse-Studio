@@ -1,0 +1,27 @@
+{
+  "name": "netpulse-networking",
+  "version": "2.4.0",
+  "description": "Enterprise Network Observability, Simulation & Protocol Diagnostics Suite",
+  "main": "server/main.py",
+  "scripts": {
+    "start": "python server/main.py --host 0.0.0.0 --port 8080",
+    "build": "python -m py_compile server/main.py",
+    "test": "python server/tests/run_all_tests.py",
+    "lint": "flake8 server/ client/",
+    "docker:build": "docker build -t netpulse-suite:latest .",
+    "docker:run": "docker-compose up -d"
+  },
+  "keywords": [
+    "networking",
+    "bgp",
+    "ospf",
+    "sdn",
+    "openflow",
+    "packet-inspector",
+    "wireshark",
+    "firewall",
+    "diagnostics"
+  ],
+  "author": "NetPulse Engineering",
+  "private": true
+}

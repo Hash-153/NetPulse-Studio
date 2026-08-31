@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "netpulse-networking"
+version = "2.4.0"
+description = "Enterprise Network Observability, Simulation & Protocol Diagnostics Suite"
+authors = ["NetPulse Engineering <engineering@netpulse.local>"]
+readme = "README.md"
+packages = [{include = "server"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+black = "^23.7.0"
+flake8 = "^6.1.0"
+mypy = "^1.5.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["server/tests"]
+python_files = ["test_*.py"]
