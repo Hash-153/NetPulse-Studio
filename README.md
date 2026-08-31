@@ -41,7 +41,7 @@ npm install
 
 ### 4. Configure Environment
 ```bash
-cp .env.example .env
+# Configuration template is provided in example.env
 ```
 
 ---
