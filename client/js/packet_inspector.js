@@ -2,7 +2,7 @@
  * NetPulse - Packet Sniffer & Wireshark-Style Deep Packet Inspector
  */
 
-const PacketInspector = {
+window.PacketInspector = {
   packets: [],
   selectedPacketIndex: null,
 
@@ -24,12 +24,16 @@ const PacketInspector = {
       const btn = document.getElementById(item.id);
       if (btn) {
         btn.addEventListener('click', async () => {
-          await fetch('/api/packets/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ protocol: item.proto })
-          });
-          this.fetchPackets();
+          try {
+            await fetch('/api/packets/generate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ protocol: item.proto })
+            });
+            this.fetchPackets();
+          } catch (e) {
+            console.error('Inject error:', e);
+          }
         });
       }
     });

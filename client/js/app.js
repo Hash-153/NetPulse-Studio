@@ -2,7 +2,7 @@
  * NetPulse Application - Core Controller & Navigation
  */
 
-const App = {
+window.App = {
   activeTab: 'tab-topology',
   pollInterval: null,
 
@@ -11,12 +11,16 @@ const App = {
     this.bindGlobalActions();
     this.startTelemetryPolling();
 
-    // Initialize modules
-    if (window.TopologyView) TopologyView.init();
-    if (window.PacketInspector) PacketInspector.init();
-    if (window.DiagnosticsUI) DiagnosticsUI.init();
-    if (window.FirewallEditor) FirewallEditor.init();
-    if (window.LiveMonitor) LiveMonitor.init();
+    // Initialize all modules
+    try {
+      if (window.TopologyView) window.TopologyView.init();
+      if (window.PacketInspector) window.PacketInspector.init();
+      if (window.DiagnosticsUI) window.DiagnosticsUI.init();
+      if (window.FirewallEditor) window.FirewallEditor.init();
+      if (window.LiveMonitor) window.LiveMonitor.init();
+    } catch (err) {
+      console.error('Module initialization error:', err);
+    }
   },
 
   bindNavigation() {
@@ -40,7 +44,7 @@ const App = {
     });
 
     if (tabId === 'tab-topology' && window.TopologyView) {
-      TopologyView.render();
+      window.TopologyView.render();
     }
   },
 
@@ -55,7 +59,7 @@ const App = {
             body: JSON.stringify({ protocol: 'random' })
           });
           const pkt = await res.json();
-          if (window.PacketInspector) PacketInspector.fetchPackets();
+          if (window.PacketInspector) window.PacketInspector.fetchPackets();
         } catch (e) {
           console.error('Inject error:', e);
         }
@@ -79,10 +83,10 @@ const App = {
         }
 
         if (window.LiveMonitor) {
-          LiveMonitor.update(data);
+          window.LiveMonitor.update(data);
         }
       } catch (e) {
-        // Silent catch during initial server boot
+        // Silent catch
       }
     };
 
@@ -91,4 +95,4 @@ const App = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => App.init());
+document.addEventListener('DOMContentLoaded', () => window.App.init());

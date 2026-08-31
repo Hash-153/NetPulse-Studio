@@ -306,7 +306,7 @@ body {
 
 /* Inputs & Form Controls */
 .input-control, .select-control {
-  background: rgba(10, 14, 23, 0.6);
+  background: #111927;
   border: 1px solid var(--border-color);
   color: var(--text-main);
   padding: 0.5rem 0.85rem;
@@ -320,6 +320,12 @@ body {
 .input-control:focus, .select-control:focus {
   border-color: var(--accent-cyan);
   box-shadow: 0 0 8px rgba(0, 212, 255, 0.25);
+}
+
+select.select-control option {
+  background: #111927;
+  color: #f3f4f6;
+  padding: 6px 10px;
 }
 
 /* Badges */

@@ -2,7 +2,7 @@
  * NetPulse - Firewall & ACL Rule Editor
  */
 
-const FirewallEditor = {
+window.FirewallEditor = {
   rules: [],
 
   init() {
@@ -53,7 +53,7 @@ const FirewallEditor = {
         <td>${r.description}</td>
         <td style="color: var(--accent-cyan); font-weight: 700;">${r.match_count}</td>
         <td>
-          <button class="btn btn-danger" style="padding: 2px 8px; font-size: 0.75rem;" onclick="FirewallEditor.deleteRule(${r.id})">Delete</button>
+          <button class="btn btn-danger" style="padding: 2px 8px; font-size: 0.75rem;" onclick="window.FirewallEditor.deleteRule(${r.id})">Delete</button>
         </td>
       `;
 

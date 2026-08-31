@@ -2,7 +2,7 @@
  * NetPulse - Real-Time Canvas Telemetry Chart & IDS Security Alert Stream
  */
 
-const LiveMonitor = {
+window.LiveMonitor = {
   canvas: null,
   ctx: null,
   history: [],

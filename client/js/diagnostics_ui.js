@@ -2,7 +2,7 @@
  * NetPulse - Diagnostics Workbench (Ping, Traceroute, Port Scanner)
  */
 
-const DiagnosticsUI = {
+window.DiagnosticsUI = {
   init() {
     this.populateNodeSelects();
     this.bindEvents();
@@ -59,8 +59,10 @@ const DiagnosticsUI = {
   },
 
   async runPing() {
-    const src = document.getElementById('diag-src-select').value;
-    const dst = document.getElementById('diag-dst-select').value;
+    const srcElem = document.getElementById('diag-src-select');
+    const dstElem = document.getElementById('diag-dst-select');
+    const src = srcElem ? srcElem.value : 'pc-eng1';
+    const dst = dstElem ? dstElem.value : 'srv-web';
     const consoleBox = document.getElementById('diag-output-console');
 
     consoleBox.innerHTML = `PING ${dst} from ${src}: 64 data bytes...\n`;
@@ -96,8 +98,10 @@ const DiagnosticsUI = {
   },
 
   async runTraceroute() {
-    const src = document.getElementById('diag-src-select').value;
-    const dst = document.getElementById('diag-dst-select').value;
+    const srcElem = document.getElementById('diag-src-select');
+    const dstElem = document.getElementById('diag-dst-select');
+    const src = srcElem ? srcElem.value : 'pc-eng1';
+    const dst = dstElem ? dstElem.value : 'srv-web';
     const consoleBox = document.getElementById('diag-output-console');
 
     consoleBox.innerText = `traceroute to ${dst} (from ${src}), 30 hops max...\n`;
